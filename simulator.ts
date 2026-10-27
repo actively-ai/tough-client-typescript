@@ -3,8 +3,6 @@ const DEFAULT_SERVER_URL = "http://localhost:8000/completion";
 const DEFAULT_USER_ID = "default";
 const DEFAULT_DURATION = 60;
 
-const MAX_LOGS = 10;
-
 // ANSI colors for terminal output
 const GREEN = "\x1b[92m";
 const YELLOW = "\x1b[93m";
@@ -54,7 +52,6 @@ class Client {
 
   // Logs: key is timestamp string, value is colorized message
   readonly logs = new Map<string, string>();
-  readonly maxLogs = 10;
 
   constructor(
     clientId: number,
@@ -219,9 +216,8 @@ class Display {
     process.stdout.write(`${header1Wrapped} ${separator} ${header2Wrapped}\n`);
     process.stdout.write("-".repeat(termWidth) + "\n");
 
-    // Take only the most recent MAX_LOGS logs
-    const client1Logs = [...client1.logs.entries()].slice(-MAX_LOGS);
-    const client2Logs = [...client2.logs.entries()].slice(-MAX_LOGS);
+    const client1Logs = [...client1.logs.entries()];
+    const client2Logs = [...client2.logs.entries()];
 
     // Pair them up so we can display in two columns
     const rows = Math.max(client1Logs.length, client2Logs.length);
