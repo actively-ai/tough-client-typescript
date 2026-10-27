@@ -36,7 +36,12 @@ async function getUpstreamCompletion(
       .type(resp.headers.get("content-type") ?? "application/json")
       .send(content);
   } catch (e) {
-    res.status(503).send(`Upstream request failed: ${e}`);
+    // fetch rejects with a TypeError when the upstream request itself fails
+    if (e instanceof TypeError) {
+      res.status(503).send(`Upstream request failed: ${e}`);
+    } else {
+      res.status(500).send(`Unexpected error: ${e}`);
+    }
   }
 }
 
